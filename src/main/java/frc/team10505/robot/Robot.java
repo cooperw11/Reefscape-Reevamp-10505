@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     //TODO add stuff (you guys best know what goes here by now)
+    //walter is not the supreme anything
   }
 
   @Override
