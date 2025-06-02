@@ -16,19 +16,28 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+  //TODO initialize robot container
+  //AND create autonomous command
+
   public Robot() {}
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    //TODO add stuff (you guys best know what goes here by now)
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    //TODO schedule autonomous command (referense season code if need be)
+  }
 
   @Override
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    //TODO cancel autonomous command (referense season code if need be)
+  }
 
   @Override
   public void teleopPeriodic() {}
