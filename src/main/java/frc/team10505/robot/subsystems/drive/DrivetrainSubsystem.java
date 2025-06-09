@@ -8,6 +8,13 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import au.grapplerobotics.LaserCan;
+
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
@@ -17,6 +24,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -32,6 +41,12 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
     /** Swerve request to apply during robot-centric path following(AKA AUTONS and autons ONLY!) */
     private SwerveRequest.ApplyRobotSpeeds autoRobotDrive = new SwerveRequest.ApplyRobotSpeeds();
+    private SwerveRequest.ApplyRobotSpeeds RobotDrive = new SwerveRequest.ApplyRobotSpeeds();
+
+    private final LaserCan leftLaser = new LaserCan(DRIVETRAIN_RIGHT_LASER_ID);
+    private final LaserCan Rightlaser = new LaserCan(DRIVETRAIN_LEFT_LASER_ID);
+
+    public final Spark blinkyLight = new Spark(0);
 
     /**Swerve request to apply during TELEOP and teleop ONLY */
     private SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric()
@@ -162,9 +177,13 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
+    public Command stop() {
+        return runOnce(() -> this.setControl(RobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
+    }
+
     /** FOR THE LOVE OF EVEYTHING GOOD, ONLY USE IN AUTONS */
     public Command autoStop() {
-        return runOnce(() -> this.setControl(autoRobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
+        return runOnce(() -> this.setControl(RobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
     }
 
 
@@ -190,8 +209,68 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    
+    public boolean seesLeftSensor() {
+        try {
+            LaserCan.Measurement leftmeas = leftLaser.getMeasurement();
+            return (leftmeas.distance_mm < 300);
+        } catch (NullPointerException l) {
+            DriverStation.reportError("Left Sensor is Null", l.getStackTrace());
+            return false;
+        }
+    }
 
+    public boolean seesRightSensor() {
+        try {
+            LaserCan.Measurement RightMeas = Rightlaser.getMeasurement();
+            return (RightMeas.distance_mm < 300);
+        } catch (NullPointerException r) {
+            DriverStation.reportError("Right Sensor is Null", r.getStackTrace());
+            return false;
+        }
+    }
+
+    public boolean autonSeesLeftSensor() {
+        try {
+            LaserCan.Measurement leftmeas = leftLaser.getMeasurement();
+            return (leftmeas.distance_mm < 300);
+        } catch (NullPointerException l) {
+            DriverStation.reportError("Left Sensor is Null", l.getStackTrace());
+            return false;
+        }
+    }
+
+    public boolean autonSeesRightSensor() {
+        try {
+            LaserCan.Measurement RightMeas = Rightlaser.getMeasurement();
+            return (RightMeas.distance_mm < 300);
+        } catch (NullPointerException r) {
+            DriverStation.reportError("Right Sensor is Null", r.getStackTrace());
+            return false;
+        }
+    }
+
+    public boolean seesLeftSensorClose() {
+        try {
+            LaserCan.Measurement leftmeas = leftLaser.getMeasurement();
+            return (leftmeas.distance_mm < 250);
+        } catch (NullPointerException l) {
+            DriverStation.reportError("Left Sensor is Null", l.getStackTrace());
+            return false;
+        }
+    }
+
+    public boolean seesRightSensorClose() {
+        try {
+            LaserCan.Measurement RightMeas = Rightlaser.getMeasurement();
+            return (RightMeas.distance_mm < 250);
+        } catch (NullPointerException r) {
+            DriverStation.reportError("Right Sensor is Null", r.getStackTrace());
+            return false;
+        }
+    }
+
+
+   
     @Override
     public void periodic() {
         /*
@@ -213,9 +292,34 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
                                 : kBlueAlliancePerspectiveRotation);
                 m_hasAppliedOperatorPerspective = true;
             });
-        }   
-           
-        //TODO use if/else statements where the conditions are the boolean methods from the alignment lasers(reference season code if needed)  
+
+        }    
+        
+        if (seesLeftSensorClose() && seesRightSensorClose()) {
+            blinkyLight.set(0.35);
+        } else if (seesLeftSensor() && seesRightSensor()) {
+            blinkyLight.set(-0.11);
+        }else if (!seesLeftSensor() && !seesRightSensor()) {
+            blinkyLight.set(0.61);
+        }else if (seesLeftSensor() | seesRightSensor()) {
+            blinkyLight.set(0.77);
+        }
+
+
+        try{
+            SmartDashboard.putNumber("Left Laser Distance", leftLaser.getMeasurement().distance_mm);
+    }
+        catch(NullPointerException r) {
+            DriverStation.reportError("Left Sensor is Null", r.getStackTrace());
+        }
+
+        try{
+            SmartDashboard.putNumber("Right Laser distance", Rightlaser.getMeasurement().distance_mm);
+        }
+
+        catch(NullPointerException r){
+            DriverStation.reportError("Right Sensor is null", r.getStackTrace());
+        }
     }
 
     private void startSimThread() {
@@ -233,7 +337,24 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    //TODO add methods for alignment lasers (reference season code if needed)
+    public void configAutoBuilder() {
+        try {
+            var config = RobotConfig.fromGUISettings();
 
-    //TODO add auto builder configuration method (reference personal project if needed)
+            AutoBuilder.configure(
+                () -> getState().Pose, 
+                this::resetPose, 
+                () -> getState().Speeds, 
+                (speeds, feedforwards) -> setControl(m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())),
+                 new PPHolonomicDriveController(
+                    new PIDConstants(0, 0, 0),
+                    new PIDConstants(0, 0, 0)), config, 
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red, 
+                    this);
+        } catch (Exception ex) {
+            DriverStation.reportError("Something might be broken and i dont know what it is", ex.getStackTrace());
+        }
+    }
+
 }
