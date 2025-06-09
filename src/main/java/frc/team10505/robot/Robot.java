@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    //TODO schedule autonomous command (referense season code if need be)
+    //TODO schedule autonomous command (reference season code if need be)
   }
 
   @Override
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    //TODO cancel autonomous command (referense season code if need be)
+    //TODO cancel autonomous command (reference season code if need be)
   }
 
   @Override

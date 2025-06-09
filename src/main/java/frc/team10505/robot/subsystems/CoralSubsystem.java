@@ -17,33 +17,35 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+//TODO import hardware constants AND coral constants, statically (instead of "import", write "import static" and before the semicolon, add ".*" to import all the vars in the class)
+
 public class CoralSubsystem extends SubsystemBase {
 
         // Konstants
-        private static final int kIntakeLeft = 1;
-        private static final int kIntakeRight = 2;
+        private static final int kIntakeLeft = 1;//TODO move to constants
+        private static final int kIntakeRight = 2;//TODO move to constants
 
-        public static final int CORAL_MOTOR_CURRENT_LIMIT = 30;
+        public static final int CORAL_MOTOR_CURRENT_LIMIT = 30;//TODO move to constants
 
         // Mystery Stuph defining
         private SparkMaxConfig coralLeftConfig = new SparkMaxConfig();
         private SparkMaxConfig coralRightConfig = new SparkMaxConfig();
-        private final Mechanism2d flywheelHome = new Mechanism2d(5, 5);
+        private final Mechanism2d flywheelHome = new Mechanism2d(5, 5);//TODO move(cut and paste to put it w/ other sim vars)
         // Encoders
-        public double coralEncoderLeft = 0.0;
-        public double coralEncoderRight = 0.0;
+        public double coralEncoderLeft = 0.0;//TODO delete. flywheels dont need feedback, ergo dont need encoders.
+        public double coralEncoderRight = 0.0;//TODO delete. flywheels dont need feedback, ergo dont need encoders. 
 
         // Variables
         private SparkMax flywheelRight = new SparkMax(kIntakeRight, MotorType.kBrushless);
         private SparkMax flywheelLeft = new SparkMax(kIntakeLeft, MotorType.kBrushless);
         private MechanismLigament2d flywheelLeftVis = new MechanismLigament2d("Left Flywheel", kIntakeLeft,
-                        CORAL_MOTOR_CURRENT_LIMIT, kIntakeLeft, null);
+                        CORAL_MOTOR_CURRENT_LIMIT, kIntakeLeft, null);//TODO delete, mech ligs are odd, and wont use their constructor like this. referense roughly 40 lines down to see how its done properly
         private MechanismLigament2d flywheelRightVis = new MechanismLigament2d("Right Flywheel", kIntakeRight,
-                        CORAL_MOTOR_CURRENT_LIMIT, kIntakeRight, null);
+                        CORAL_MOTOR_CURRENT_LIMIT, kIntakeRight, null);//TODO delete, mech ligs are odd, and wont use their constructor like this. referense roughly 40 lines down to see how its done properly(also why are there two??)
 
         // The Goods...
         public double getCoralEncoderL() {
-                return (flywheelLeft.getAbsoluteEncoder().getPosition() * (Math.PI * 1.751 * 2) / 12.0) * 1.0;
+                return (flywheelLeft.getAbsoluteEncoder().getPosition() * (Math.PI * 1.751 * 2) / 12.0) * 1.0;//TODO delete. lol is this from the seasons elevator? also methods belong BELOW the constructor
         }
 
         private final FlywheelSim intakeLeftSim = new FlywheelSim(
@@ -86,6 +88,7 @@ public class CoralSubsystem extends SubsystemBase {
                                                                                                              // burgled
                                                                                                              // too :)
 
+
         private final MechanismLigament2d leftIntakeViz = intakeLeftRoot
                         .append(new MechanismLigament2d("leftIntakeLigament", 0.4, 000)); // All the numbers (meaning
                                                                                           // the 0.4 and 000) have been
@@ -100,8 +103,8 @@ public class CoralSubsystem extends SubsystemBase {
         private double simMotorSpeed = 0.0;
         private double simMotorSpeed2 = 0.0;
 
-        // Commands
-        public Command setFlywheelSpeed(double kflywheelSpeed) {
+        // Commands//TODO move BELOW the constructor
+        public Command setFlywheelSpeed(double kflywheelSpeed) {//Name of the parameter doesn't need to start w k. (k is for konstants, and konstants only)
                 if (Utils.isSimulation()) {
                         return runOnce(() -> {
                                 simMotorSpeed = kflywheelSpeed;
@@ -125,10 +128,12 @@ public class CoralSubsystem extends SubsystemBase {
                 flywheelRight.configure(coralRightConfig, ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
+                //TODO add smartdashboard thing to put mechanism2d (reference personal project if needed)
+
         }
 
         @Override
-        public void periodic() {
+        public void periodic() {//TODO fill out
 
                 if (Utils.isSimulation()) {
 

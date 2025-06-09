@@ -22,6 +22,8 @@ public class RobotContainer {
 
     /*Sendable choosers */
     private SendableChooser<Double> polarityChooser = new SendableChooser<>(); 
+    //TODO add sendable chooser <Command> for autons. Dont assign it a value though
+
 
     /*Constructor */
     public RobotContainer(){
@@ -37,7 +39,7 @@ public class RobotContainer {
             configButtonBindings();
         }
 
-        //TODO create and call pathplanner config
+        //TODO call autobuilder config once created
         configNamedCommands();
         configSendableChoosers();
     }
