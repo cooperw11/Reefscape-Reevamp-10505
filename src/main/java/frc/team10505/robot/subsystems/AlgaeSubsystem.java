@@ -22,19 +22,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeSubsystem extends SubsystemBase {
  // Variables
-    private double startingAngle = 0;
+    private double startingAngle = -90;
     private SparkMaxConfig pivotMotorConfig = new SparkMaxConfig();
     private SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
     private PIDController pivotController;
     private ArmFeedforward pivotFeedForward;
     private double simSpeed = 0;
-    public final static int ALGAE_INTAKE_MOTOR_ID = 8;
-    public final static int pivotMotorId = 7;
-    private SparkMax pivotMotor = new SparkMax(pivotMotorId, MotorType.kBrushless);
+
+    
+    //Motor Definitions
+    private SparkMax pivotMotor = new SparkMax(8, MotorType.kBrushless);//ALGAE_PIVOT_MOTOR_ID, MotorType.kBrushless);//TODO add after merging
+    private SparkMax intakeMotor = new SparkMax(7, MotorType.kBrushless);//ALGAE_INTAKE_MOTOR_ID, MotorType.kBrushless);
+
+    //Constants
     private final int kPivotMotorCurrentLimit = 1;
     private final double pivotEncoderScale = 1;
-    private double pivotSetpoint = -90;
-    private final SparkMax intakeMotor = new SparkMax(ALGAE_INTAKE_MOTOR_ID, MotorType.kBrushless);
+    private double pivotSetpoint = 0;
     private double intakeSpeed = 0;
     public boolean coasting = false;
     private double absoluteOffset = 180;
@@ -54,7 +57,6 @@ public class AlgaeSubsystem extends SubsystemBase {
             2), DCMotor.getNEO(1), 0);
 
     // Motor Controllers
-    final SparkMax intakemotor = new SparkMax(ALGAE_INTAKE_MOTOR_ID, MotorType.kBrushless);
     private SparkMaxConfig IntakeMotorConfig = new SparkMaxConfig();
 
     public double getEffort() {
@@ -119,12 +121,12 @@ public class AlgaeSubsystem extends SubsystemBase {
         pivotMotorConfig.smartCurrentLimit(kPivotMotorCurrentLimit, kPivotMotorCurrentLimit);
         pivotMotorConfig.absoluteEncoder.positionConversionFactor(pivotEncoderScale);
 
-        if (Utils.isSimulation() || Utils.isReplay()) {
+        if (Utils.isSimulation()) {
             pivotController = new PIDController(0, 0, 0);
             pivotFeedForward = new ArmFeedforward(0, 0, 0, 0);
         } else {
-            pivotController = new PIDController(0, 0, 0);
-            pivotFeedForward = new ArmFeedforward(0, 0, 0, 0);
+            pivotController = new PIDController(0.1, 0, 0);
+            pivotFeedForward = new ArmFeedforward(0, 0.08, 0, 0);
         }
     }
 
@@ -149,13 +151,12 @@ public class AlgaeSubsystem extends SubsystemBase {
             SmartDashboard.putData("pivotEncoder", intakeMech);
 
         } else {
-            if (!coasting) {
-                pivotMotor.setVoltage(getEffort());
-            }
+            pivotMotor.setVoltage(getEffort());
             SmartDashboard.putNumber("Algae Intake Motor Output", intakeMotor.getAppliedOutput());
             SmartDashboard.putNumber("Pivot Motor Output", pivotMotor.getAppliedOutput());
             SmartDashboard.putNumber("pivotEncoder", getPivotEncoder());
-            pivotMotor.getMotorTemperature();
+            //pivotMotor.getMotorTemperature();
+            //pivotMotor.getAppliedOutput();
 
         }
     }
