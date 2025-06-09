@@ -35,6 +35,11 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.team10505.robot.subsystems.drive.generated.TunerConstants.TunerSwerveDrivetrain;
 
 public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsystem {
+    //TODO add our two LaserCans as variables(reference season code if needed)
+
+    //TODO add Spark for LEDs (reference season code if needed)
+
+    /** Swerve request to apply during robot-centric path following(AKA AUTONS and autons ONLY!) */
     private SwerveRequest.ApplyRobotSpeeds autoRobotDrive = new SwerveRequest.ApplyRobotSpeeds();
     private SwerveRequest.ApplyRobotSpeeds RobotDrive = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -43,6 +48,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
     public final Spark blinkyLight = new Spark(0);
 
+    /**Swerve request to apply during TELEOP and teleop ONLY */
     private SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -56,9 +62,6 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
-
-    /** Swerve request to apply during robot-centric path following */
-    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -353,4 +356,5 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
             DriverStation.reportError("Something might be broken and i dont know what it is", ex.getStackTrace());
         }
     }
+
 }
