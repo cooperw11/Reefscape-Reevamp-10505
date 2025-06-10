@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.team10505.robot.subsystems.drive.generated.TunerConstants.TunerSwerveDrivetrain;
+import static frc.team10505.robot.Constants.HardwareConstants.*;
 
 public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsystem {
     //TODO add our two LaserCans as variables(reference season code if needed)
@@ -41,10 +42,10 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
     /** Swerve request to apply during robot-centric path following(AKA AUTONS and autons ONLY!) */
     private SwerveRequest.ApplyRobotSpeeds autoRobotDrive = new SwerveRequest.ApplyRobotSpeeds();
-    private SwerveRequest.ApplyRobotSpeeds RobotDrive = new SwerveRequest.ApplyRobotSpeeds();
+    private SwerveRequest.RobotCentric robotDrive = new SwerveRequest.RobotCentric();
 
-    private final LaserCan leftLaser = new LaserCan(DRIVETRAIN_RIGHT_LASER_ID);
-    private final LaserCan Rightlaser = new LaserCan(DRIVETRAIN_LEFT_LASER_ID);
+    private final LaserCan leftLaser = new LaserCan(DRIVETRAIN_LEFT_LASER_ID);
+    private final LaserCan rightlaser = new LaserCan(DRIVETRAIN_RIGHT_LASER_ID);
 
     public final Spark blinkyLight = new Spark(0);
 
@@ -178,12 +179,12 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
     }
 
     public Command stop() {
-        return runOnce(() -> this.setControl(RobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
+        return runOnce(() -> this.setControl(robotDrive.withVelocityX(0).withVelocityY(0.0).withRotationalRate(0.0)));
     }
 
     /** FOR THE LOVE OF EVEYTHING GOOD, ONLY USE IN AUTONS */
     public Command autoStop() {
-        return runOnce(() -> this.setControl(RobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
+        return runOnce(() -> this.setControl(autoRobotDrive.withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0))));
     }
 
 
@@ -221,54 +222,13 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
     public boolean seesRightSensor() {
         try {
-            LaserCan.Measurement RightMeas = Rightlaser.getMeasurement();
+            LaserCan.Measurement RightMeas = rightlaser.getMeasurement();
             return (RightMeas.distance_mm < 300);
         } catch (NullPointerException r) {
             DriverStation.reportError("Right Sensor is Null", r.getStackTrace());
             return false;
         }
     }
-
-    public boolean autonSeesLeftSensor() {
-        try {
-            LaserCan.Measurement leftmeas = leftLaser.getMeasurement();
-            return (leftmeas.distance_mm < 300);
-        } catch (NullPointerException l) {
-            DriverStation.reportError("Left Sensor is Null", l.getStackTrace());
-            return false;
-        }
-    }
-
-    public boolean autonSeesRightSensor() {
-        try {
-            LaserCan.Measurement RightMeas = Rightlaser.getMeasurement();
-            return (RightMeas.distance_mm < 300);
-        } catch (NullPointerException r) {
-            DriverStation.reportError("Right Sensor is Null", r.getStackTrace());
-            return false;
-        }
-    }
-
-    public boolean seesLeftSensorClose() {
-        try {
-            LaserCan.Measurement leftmeas = leftLaser.getMeasurement();
-            return (leftmeas.distance_mm < 250);
-        } catch (NullPointerException l) {
-            DriverStation.reportError("Left Sensor is Null", l.getStackTrace());
-            return false;
-        }
-    }
-
-    public boolean seesRightSensorClose() {
-        try {
-            LaserCan.Measurement RightMeas = Rightlaser.getMeasurement();
-            return (RightMeas.distance_mm < 250);
-        } catch (NullPointerException r) {
-            DriverStation.reportError("Right Sensor is Null", r.getStackTrace());
-            return false;
-        }
-    }
-
 
    
     @Override
@@ -295,7 +255,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
 
         }    
         
-        if (seesLeftSensorClose() && seesRightSensorClose()) {
+        if (seesLeftSensor() && seesRightSensor()) { //TODO Debate coulors
             blinkyLight.set(0.35);
         } else if (seesLeftSensor() && seesRightSensor()) {
             blinkyLight.set(-0.11);
@@ -314,7 +274,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
         }
 
         try{
-            SmartDashboard.putNumber("Right Laser distance", Rightlaser.getMeasurement().distance_mm);
+            SmartDashboard.putNumber("Right Laser distance", rightlaser.getMeasurement().distance_mm);
         }
 
         catch(NullPointerException r){
@@ -345,7 +305,7 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
                 () -> getState().Pose, 
                 this::resetPose, 
                 () -> getState().Speeds, 
-                (speeds, feedforwards) -> setControl(m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                (speeds, feedforwards) -> setControl(autoRobotDrive.withSpeeds(speeds)
                 .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())),
                  new PPHolonomicDriveController(
                     new PIDConstants(0, 0, 0),

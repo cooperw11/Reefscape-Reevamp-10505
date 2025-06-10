@@ -9,14 +9,13 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
 import frc.team10505.robot.subsystems.AlgaeSubsystem;
+import frc.team10505.robot.subsystems.ElevatorSubsystem;
 import frc.team10505.robot.subsystems.CoralSubsystem;
 import frc.team10505.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team10505.robot.subsystems.drive.generated.TunerConstants;
@@ -47,6 +46,7 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
     private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
     private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+    //TODO add other subsystems
 
     /*Sendable choosers */
     private SendableChooser<Double> polarityChooser = new SendableChooser<>(); 
@@ -107,6 +107,6 @@ public class RobotContainer {
     }
      // Pivot Controls
      private void algaePivotControls() {
-        
+
     }
 }
