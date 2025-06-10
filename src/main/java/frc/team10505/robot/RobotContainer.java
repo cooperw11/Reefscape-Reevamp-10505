@@ -42,10 +42,10 @@ public class RobotContainer {
     private CommandXboxController xbox2;
 
     /*Subsystems */
-    private final DrivetrainSubsystem drivetrainSubsystem = TunerConstants.createDrivetrain();
-    private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-    private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
-    private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+    private final DrivetrainSubsystem drivetrainSubsys = TunerConstants.createDrivetrain();
+    private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
+    private final AlgaeSubsystem algaeSubsys = new AlgaeSubsystem();
+    private final CoralSubsystem coralSubsys = new CoralSubsystem();
     //TODO add other subsystems
 
     /*Sendable choosers */
@@ -88,10 +88,10 @@ public class RobotContainer {
             driveController.y().onTrue(algaeSubsys.setAngle(90));
         }
 
-        xbox.povUp().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0))).onFalse(drivetrainSubsystem.stop());
-        xbox.povDown().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.4).withVelocityY(0.0).withRotationalRate(0.0))).onFalse(drivetrainSubsystem.stop());
-        xbox.povLeft().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0)).until(() -> !drivetrainSubsystem.seesLeftSensor()));
-        xbox.povRight().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(-0.6).withRotationalRate(0.0)).until(() -> !drivetrainSubsystem.seesRightSensor()));
+        driveController.povUp().whileTrue(drivetrainSubsys.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0))).onFalse(drivetrainSubsys.stop());
+        driveController.povDown().whileTrue(drivetrainSubsys.applyRequest(() -> robotDrive.withVelocityX(0.4).withVelocityY(0.0).withRotationalRate(0.0))).onFalse(drivetrainSubsys.stop());
+        driveController.povLeft().whileTrue(drivetrainSubsys.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0)).until(() -> !drivetrainSubsys.seesLeftSensor()));
+        driveController.povRight().whileTrue(drivetrainSubsys.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(-0.6).withRotationalRate(0.0)).until(() -> !drivetrainSubsys.seesRightSensor()));
         
     }
 

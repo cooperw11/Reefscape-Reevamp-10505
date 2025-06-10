@@ -19,7 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-//TODO import hardware constants AND algae constants, statically (instead of "import", write "import static" and before the semicolon, add ".*" to import all the vars in the class)
+
+import static frc.team10505.robot.Constants.HardwareConstants.*;
+import static frc.team10505.robot.Constants.AlgaeConstants.*;
+
 
 public class AlgaeSubsystem extends SubsystemBase {
  // Variables
@@ -32,8 +35,8 @@ public class AlgaeSubsystem extends SubsystemBase {
 
     
     //Motor Definitions
-    private SparkMax pivotMotor = new SparkMax(8, MotorType.kBrushless);//ALGAE_PIVOT_MOTOR_ID, MotorType.kBrushless);//TODO add after merging
-    private SparkMax intakeMotor = new SparkMax(7, MotorType.kBrushless);//ALGAE_INTAKE_MOTOR_ID, MotorType.kBrushless);
+    private SparkMax pivotMotor = new SparkMax(ALGAE_PIVOT_MOTOR_ID, MotorType.kBrushless);//TODO add after merging
+    private SparkMax intakeMotor = new SparkMax(ALGAE_INTAKE_MOTOR_ID, MotorType.kBrushless);
 
 
     //Constants
