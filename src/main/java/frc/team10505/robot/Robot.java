@@ -5,6 +5,7 @@
 package frc.team10505.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -16,15 +17,16 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  //TODO initialize robot container
-  //AND create autonomous command
+  private RobotContainer robotContainer = new RobotContainer();
+   //TODO AND create autonomous command
 
   public Robot() {}
 
+
+
   @Override
   public void robotPeriodic() {
-    //TODO add stuff (you guys best know what goes here by now)
-    //walter is not the supreme anything
+     CommandScheduler.getInstance().run();
   }
 
   @Override

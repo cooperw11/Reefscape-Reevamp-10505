@@ -12,8 +12,6 @@ import static frc.team10505.robot.Constants.CoralConstants.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-//TODO import hardware constants AND coral constants, statically (instead of "import", write "import static" and before the semicolon, add ".*" to import all the vars in the class)
-
 public class CoralSubsystem extends SubsystemBase {
         // Variables (Motors)
         private SparkMax flywheelRight = new SparkMax(CORAL_RIGHT_MOTOR_ID, MotorType.kBrushless);
@@ -38,3 +36,4 @@ public class CoralSubsystem extends SubsystemBase {
 
         //TODO add periodic method(Should only put stuff to Smartdashboard)
 }
+
