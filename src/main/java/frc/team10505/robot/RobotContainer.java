@@ -2,16 +2,39 @@ package frc.team10505.robot;
 
 import com.ctre.phoenix6.Utils;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import frc.team10505.robot.subsystems.AlgaeSubsystem;
+import frc.team10505.robot.subsystems.CoralSubsystem;
 import frc.team10505.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team10505.robot.subsystems.drive.generated.TunerConstants;
 
+
+
 public class RobotContainer { 
+
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+
+    private SwerveRequest.RobotCentric robotDrive = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric().withDeadband(MaxSpeed*0.1).withRotationalDeadband(MaxAngularRate*0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+    private final Telemetry logger = new Telemetry(MaxSpeed);
+
     /*controllers */
     private CommandJoystick joystick;
     private CommandJoystick joystick2;
@@ -20,12 +43,15 @@ public class RobotContainer {
     private CommandXboxController xbox2;
 
     /*Subsystems */
-    private final DrivetrainSubsystem driveSubsys = TunerConstants.createDrivetrain();
-    private final AlgaeSubsystem algaeSubsys = new AlgaeSubsystem();
-    //TODO add other subsystems
+    private final DrivetrainSubsystem drivetrainSubsystem = TunerConstants.createDrivetrain();
+    private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+    private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
+    private final CoralSubsystem coralSubsystem = new CoralSubsystem();
 
     /*Sendable choosers */
     private SendableChooser<Double> polarityChooser = new SendableChooser<>(); 
+    //TODO add sendable chooser <Command> for autons. Dont assign it a value though
+
 
     /*Constructor */
     public RobotContainer(){
@@ -41,7 +67,7 @@ public class RobotContainer {
             configButtonBindings();
         }
 
-        //TODO create and call pathplanner config
+        //TODO call autobuilder config once created
         configNamedCommands();
         configSendableChoosers();
     }
@@ -61,6 +87,12 @@ public class RobotContainer {
             driveController.b().onTrue(algaeSubsys.setAngle(-90));
             driveController.y().onTrue(algaeSubsys.setAngle(90));
         }
+
+        xbox.povUp().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0))).onFalse(drivetrainSubsystem.stop());
+        xbox.povDown().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.4).withVelocityY(0.0).withRotationalRate(0.0))).onFalse(drivetrainSubsystem.stop());
+        xbox.povLeft().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0)).until(() -> !drivetrainSubsystem.seesLeftSensor()));
+        xbox.povRight().whileTrue(drivetrainSubsystem.applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(-0.6).withRotationalRate(0.0)).until(() -> !drivetrainSubsystem.seesRightSensor()));
+        
     }
 
     private void configSendableChoosers(){
