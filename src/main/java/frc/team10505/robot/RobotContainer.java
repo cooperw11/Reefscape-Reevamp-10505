@@ -7,11 +7,14 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team10505.robot.subsystems.AlgaeSubsystem;
@@ -49,7 +52,7 @@ public class RobotContainer {
 
     /* Sendable choosers */
     private SendableChooser<Double> polarityChooser = new SendableChooser<>();
-    // TODO add sendable chooser <Command> for autons. Dont assign it a value though
+    private SendableChooser<Command> autonChooser;
 
     /* Constructor */
     public RobotContainer() {
@@ -64,8 +67,7 @@ public class RobotContainer {
 
             configButtonBindings();
         }
-
-        // TODO call autobuilder config once created
+        drivetrainSubsys.configAutoBuilder();
         configNamedCommands();
         configSendableChoosers();
     }
@@ -91,10 +93,10 @@ public class RobotContainer {
             driveController.y().onTrue(algaeSubsys.setAngle(90));
         }
 
-        //TODO double check directions (pov up should be a negative velocity x, I think)
+        //TODO double check directions (pov up should be a🐱‍👤negative velocity x, I think)
         driveController.povUp()
                 .whileTrue(drivetrainSubsys
-                        .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0)))
+                        .applyRequest(() -> robotDrive.withVelocityX(-0.4).withVelocityY(0.0).withRotationalRate(0.0)))
                 .onFalse(drivetrainSubsys.stop());
         driveController.povDown()
                 .whileTrue(drivetrainSubsys
@@ -115,6 +117,10 @@ public class RobotContainer {
         polarityChooser.setDefaultOption("Positive", 1.0);
         polarityChooser.addOption("Negative", -1.0);
         SmartDashboard.putData("Polarity Chooser", polarityChooser);
+
+        autonChooser = AutoBuilder.buildAutoChooser();
+        autonChooser.setDefaultOption("null", Commands.print("stupid monky, be gooderer"));
+        SmartDashboard.putData("Auton Chooser", autonChooser);
 
     }
 
