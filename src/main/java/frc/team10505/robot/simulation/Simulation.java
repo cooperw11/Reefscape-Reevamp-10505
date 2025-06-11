@@ -53,7 +53,7 @@ public class Simulation extends SubsystemBase {
             LinearSystemId.createFlywheelSystem(DCMotor.getKrakenX60(1), 0.00001, 4), DCMotor.getKrakenX60(1));
 
     public Simulation(AlgaeSubsystem algaeSubsys, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
-        this.algaeSubsystem = algaeSubsystem;
+        this.algaeSubsystem = algaeSubsys;
         this.coralSubsystem = coralSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
 
