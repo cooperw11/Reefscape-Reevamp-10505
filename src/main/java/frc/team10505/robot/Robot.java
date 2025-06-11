@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   private RobotContainer robotContainer = new RobotContainer();
-   //TODO AND create autonomous command
+   //TODO create autonomous command
 
   public Robot() {}
 
