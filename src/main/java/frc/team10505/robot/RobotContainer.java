@@ -36,7 +36,7 @@ public class RobotContainer {
     private CommandJoystick joystick;
     private CommandJoystick joystick2;
 
-    private CommandXboxController driveController = new CommandXboxController(0);
+    private CommandXboxController xbox = new CommandXboxController(0);
     private CommandXboxController xbox2;
 
     /* Subsystems */
@@ -59,10 +59,11 @@ public class RobotContainer {
 
             simConfigButtonBindings();
         } else {
-            driveController = new CommandXboxController(0);
-            xbox2 = new CommandXboxController(1);
+            xbox = new CommandXboxController(1);
+            xbox2 = new CommandXboxController(0);
 
             configButtonBindings();
+            elevatorButtonBindings();
         }
 
         // TODO call autobuilder config once created
@@ -85,30 +86,39 @@ public class RobotContainer {
             joystick.button(2).onTrue(algaeSubsys.setAngle(-30));
             joystick.button(3).onTrue(algaeSubsys.setAngle(-90));
         } else {
-            driveController.x().onTrue(algaeSubsys.setAngle(0));
-            driveController.a().onTrue(algaeSubsys.setAngle(-30));
-            driveController.b().onTrue(algaeSubsys.setAngle(-90));
-            driveController.y().onTrue(algaeSubsys.setAngle(90));
+            xbox.x().onTrue(algaeSubsys.setAngle(0));
+            xbox.a().onTrue(algaeSubsys.setAngle(-30));
+            xbox.b().onTrue(algaeSubsys.setAngle(-90));
+            xbox.y().onTrue(algaeSubsys.setAngle(90));
         }
 
+    
+
         //TODO double check directions (pov up should be a negative velocity x, I think)
-        driveController.povUp()
+        xbox.povUp()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0)))
                 .onFalse(drivetrainSubsys.stop());
-        driveController.povDown()
+        xbox.povDown()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.4).withVelocityY(0.0).withRotationalRate(0.0)))
                 .onFalse(drivetrainSubsys.stop());
-        driveController.povLeft()
+        xbox.povLeft()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0))
                         .until(() -> !drivetrainSubsys.seesLeftSensor()));
-        driveController.povRight()
+        xbox.povRight()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(-0.6).withRotationalRate(0.0))
                         .until(() -> !drivetrainSubsys.seesRightSensor()));
 
+    }
+
+    private void elevatorButtonBindings() {
+        xbox2.a().onTrue(elevatorSubsys.setHeight(0));
+        xbox2.b().onTrue(elevatorSubsys.setHeight(10));
+        xbox2.y().onTrue(elevatorSubsys.setHeight(20));
+        xbox2.x().onTrue(elevatorSubsys.setHeight(30));
     }
 
     private void configSendableChoosers() {
