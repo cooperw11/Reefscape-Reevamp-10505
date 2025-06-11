@@ -7,13 +7,17 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.team10505.robot.simulation.Simulation;
 import frc.team10505.robot.subsystems.AlgaeSubsystem;
 import frc.team10505.robot.subsystems.ElevatorSubsystem;
 import frc.team10505.robot.subsystems.CoralSubsystem;
@@ -36,7 +40,7 @@ public class RobotContainer {
     private CommandJoystick joystick;
     private CommandJoystick joystick2;
 
-    private CommandXboxController driveController = new CommandXboxController(0);
+    private CommandXboxController xbox = new CommandXboxController(0);
     private CommandXboxController xbox2;
 
     /* Subsystems */
@@ -44,12 +48,12 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
     private final AlgaeSubsystem algaeSubsys = new AlgaeSubsystem();
     private final CoralSubsystem coralSubsys = new CoralSubsystem();
-
-    //TODO add other classes(Simulation and Superstructure)
-
+    private final Superstructure superstructure = new Superstructure(algaeSubsys, coralSubsys, elevatorSubsys, drivetrainSubsys);
+    private final Simulation simulation = new Simulation(algaeSubsys, elevatorSubsys, coralSubsys);
+   
     /* Sendable choosers */
     private SendableChooser<Double> polarityChooser = new SendableChooser<>();
-    // TODO add sendable chooser <Command> for autons. Dont assign it a value though
+    public SendableChooser<Command> autonChooser;
 
     /* Constructor */
     public RobotContainer() {
@@ -59,13 +63,13 @@ public class RobotContainer {
 
             simConfigButtonBindings();
         } else {
-            driveController = new CommandXboxController(0);
-            xbox2 = new CommandXboxController(1);
+            xbox = new CommandXboxController(1);
+            xbox2 = new CommandXboxController(0);
 
             configButtonBindings();
+            elevatorButtonBindings();
         }
-
-        // TODO call autobuilder config once created
+        drivetrainSubsys.configAutoBuilder();
         configNamedCommands();
         configSendableChoosers();
     }
@@ -85,36 +89,47 @@ public class RobotContainer {
             joystick.button(2).onTrue(algaeSubsys.setAngle(-30));
             joystick.button(3).onTrue(algaeSubsys.setAngle(-90));
         } else {
-            driveController.x().onTrue(algaeSubsys.setAngle(0));
-            driveController.a().onTrue(algaeSubsys.setAngle(-30));
-            driveController.b().onTrue(algaeSubsys.setAngle(-90));
-            driveController.y().onTrue(algaeSubsys.setAngle(90));
+            xbox.x().onTrue(algaeSubsys.setAngle(0));
+            xbox.a().onTrue(algaeSubsys.setAngle(-30));
+            xbox.b().onTrue(algaeSubsys.setAngle(-90));
+            xbox.y().onTrue(algaeSubsys.setAngle(90));
         }
 
         //TODO double check directions (pov up should be a negative velocity x, I think)
-        driveController.povUp()
+        xbox.povUp()
                 .whileTrue(drivetrainSubsys
-                        .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0)))
+                        .applyRequest(() -> robotDrive.withVelocityX(-0.4).withVelocityY(0.0).withRotationalRate(0.0)))
                 .onFalse(drivetrainSubsys.stop());
-        driveController.povDown()
+        xbox.povDown()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.4).withVelocityY(0.0).withRotationalRate(0.0)))
                 .onFalse(drivetrainSubsys.stop());
-        driveController.povLeft()
+        xbox.povLeft()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0))
                         .until(() -> !drivetrainSubsys.seesLeftSensor()));
-        driveController.povRight()
+        xbox.povRight()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(-0.6).withRotationalRate(0.0))
                         .until(() -> !drivetrainSubsys.seesRightSensor()));
 
     }
 
+    private void elevatorButtonBindings() {
+        xbox2.a().onTrue(elevatorSubsys.setHeight(0));
+        xbox2.b().onTrue(elevatorSubsys.setHeight(10));
+        xbox2.y().onTrue(elevatorSubsys.setHeight(20));
+        xbox2.x().onTrue(elevatorSubsys.setHeight(30));
+    }
+
     private void configSendableChoosers() {
         polarityChooser.setDefaultOption("Positive", 1.0);
         polarityChooser.addOption("Negative", -1.0);
         SmartDashboard.putData("Polarity Chooser", polarityChooser);
+
+        autonChooser = AutoBuilder.buildAutoChooser();
+        autonChooser.setDefaultOption("null", Commands.print("stupid monky, be gooderer"));
+        SmartDashboard.putData("Auton Chooser", autonChooser);
 
     }
 

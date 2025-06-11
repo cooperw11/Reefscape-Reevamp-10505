@@ -35,7 +35,7 @@ public class AlgaeSubsystem extends SubsystemBase {
 
     
     //Motor Definitions
-    private SparkMax pivotMotor = new SparkMax(ALGAE_PIVOT_MOTOR_ID, MotorType.kBrushless);//TODO add after merging
+    private SparkMax pivotMotor = new SparkMax(ALGAE_PIVOT_MOTOR_ID, MotorType.kBrushless);
     private SparkMax intakeMotor = new SparkMax(ALGAE_INTAKE_MOTOR_ID, MotorType.kBrushless);
 
 
@@ -62,9 +62,8 @@ public class AlgaeSubsystem extends SubsystemBase {
                     + pivotController.calculate(getPivotEncoder(), pivotSetpoint);
     }
 
-    private double getPivotEncoder() {
+    public double getPivotEncoder() {
         return (-pivotEncoder.getPosition() + absoluteOffset);
-    }
 
     public Command setAngle(double Angle) {
         return run(() -> {
