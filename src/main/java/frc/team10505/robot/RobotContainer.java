@@ -21,7 +21,6 @@ import frc.team10505.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.team10505.robot.subsystems.drive.generated.TunerConstants;
 
 public class RobotContainer {
-
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
@@ -71,12 +70,17 @@ public class RobotContainer {
         configSendableChoosers();
     }
 
-    private void simConfigButtonBindings() {
+    //TODO create(& call) sim config default command method (just for drivetrain subsys, reference season code if need be)
 
+    //TODO create(& call) config default command method (just for drivetrain subsys, reference season code if need be)
+
+
+    private void simConfigButtonBindings(){
+        //TODO add stuff
     }
 
     private void configButtonBindings() {
-        if (Utils.isSimulation()) {
+        if (Utils.isSimulation()) {//TODO get rid of if/else statement. Move joystick bindings to simConfigButtonBindings method
             joystick.button(1).onTrue(algaeSubsys.setAngle(0));
             joystick.button(2).onTrue(algaeSubsys.setAngle(-30));
             joystick.button(3).onTrue(algaeSubsys.setAngle(-90));
@@ -87,6 +91,7 @@ public class RobotContainer {
             driveController.y().onTrue(algaeSubsys.setAngle(90));
         }
 
+        //TODO double check directions (pov up should be a negative velocity x, I think)
         driveController.povUp()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(0.0).withVelocityY(0.6).withRotationalRate(0.0)))
@@ -114,7 +119,7 @@ public class RobotContainer {
     }
 
     private void configNamedCommands() {
-
+        //TODO add stuff here
     }
 
     // Pivot Controls
