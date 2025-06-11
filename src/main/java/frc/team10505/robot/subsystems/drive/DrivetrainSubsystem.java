@@ -308,8 +308,8 @@ public class DrivetrainSubsystem extends TunerSwerveDrivetrain implements Subsys
                 (speeds, feedforwards) -> setControl(autoRobotDrive.withSpeeds(speeds)
                 .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())),
                  new PPHolonomicDriveController(
-                    new PIDConstants(0, 0, 0),
-                    new PIDConstants(0, 0, 0)), config, 
+                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(7, 0, 0)), config, 
                     () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red, 
                     this);
         } catch (Exception ex) {

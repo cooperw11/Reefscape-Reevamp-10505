@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.team10505.robot.simulation.Simulation;
 import frc.team10505.robot.subsystems.AlgaeSubsystem;
 import frc.team10505.robot.subsystems.ElevatorSubsystem;
 import frc.team10505.robot.subsystems.CoralSubsystem;
@@ -47,12 +48,12 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
     private final AlgaeSubsystem algaeSubsys = new AlgaeSubsystem();
     private final CoralSubsystem coralSubsys = new CoralSubsystem();
-
-    //TODO add other classes(Simulation and Superstructure)
-
+    private final Superstructure superstructure = new Superstructure(algaeSubsys, coralSubsys, elevatorSubsys, drivetrainSubsys);
+    private final Simulation simulation = new Simulation(algaeSubsys, elevatorSubsys, coralSubsys);
+   
     /* Sendable choosers */
     private SendableChooser<Double> polarityChooser = new SendableChooser<>();
-    private SendableChooser<Command> autonChooser;
+    public SendableChooser<Command> autonChooser;
 
     /* Constructor */
     public RobotContainer() {
