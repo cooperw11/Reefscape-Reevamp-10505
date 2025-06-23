@@ -46,8 +46,13 @@ public class Constants {
     }
 
     public class CoralConstants{
-        //TODO burgle speeds from season code
-
+       public final static double kIntakeSpeed = 0.37;
+       public final static double kOutakeSpeed = 0.25;
+       public final static double kLeftL1Speed = 0.5;
+       public final static double kRightL1Speed = 0.25;
+       public final static double kOutakeTopSpeed = 0.2;
+       public final static double kTroughSpeed = 0.30;
+       
     }
 
     public class ElevatorConstants{
