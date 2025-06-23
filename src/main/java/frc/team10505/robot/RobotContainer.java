@@ -48,9 +48,10 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsys = new ElevatorSubsystem();
     private final AlgaeSubsystem algaeSubsys = new AlgaeSubsystem();
     private final CoralSubsystem coralSubsys = new CoralSubsystem();
-    private final Superstructure superstructure = new Superstructure(algaeSubsys, coralSubsys, elevatorSubsys, drivetrainSubsys);
+    private final Superstructure superstructure = new Superstructure(algaeSubsys, coralSubsys, elevatorSubsys,
+            drivetrainSubsys);
     private final Simulation simulation = new Simulation(algaeSubsys, elevatorSubsys, coralSubsys);
-   
+
     /* Sendable choosers */
     private SendableChooser<Double> polarityChooser = new SendableChooser<>();
     public SendableChooser<Command> autonChooser;
@@ -74,17 +75,19 @@ public class RobotContainer {
         configSendableChoosers();
     }
 
-    //TODO create(& call) sim config default command method (just for drivetrain subsys, reference season code if need be)
+    // TODO create(& call) sim config default command method (just for drivetrain
+    // subsys, reference season code if need be)
 
-    //TODO create(& call) config default command method (just for drivetrain subsys, reference season code if need be)
+    // TODO create(& call) config default command method (just for drivetrain
+    // subsys, reference season code if need be)
 
-
-    private void simConfigButtonBindings(){
-        //TODO add stuff
+    private void simConfigButtonBindings() {
+        // TODO add stuff
     }
 
     private void configButtonBindings() {
-        if (Utils.isSimulation()) {//TODO get rid of if/else statement. Move joystick bindings to simConfigButtonBindings method
+        if (Utils.isSimulation()) {// TODO get rid of if/else statement. Move joystick bindings to
+                                   // simConfigButtonBindings method
             joystick.button(1).onTrue(algaeSubsys.setAngle(0));
             joystick.button(2).onTrue(algaeSubsys.setAngle(-30));
             joystick.button(3).onTrue(algaeSubsys.setAngle(-90));
@@ -95,7 +98,8 @@ public class RobotContainer {
             xbox.y().onTrue(algaeSubsys.setAngle(90));
         }
 
-        //TODO double check directions (pov up should be a negative velocity x, I think)
+        // TODO double check directions (pov up should be a negative velocity x, I
+        // think)
         xbox.povUp()
                 .whileTrue(drivetrainSubsys
                         .applyRequest(() -> robotDrive.withVelocityX(-0.4).withVelocityY(0.0).withRotationalRate(0.0)))
@@ -117,9 +121,9 @@ public class RobotContainer {
 
     private void elevatorButtonBindings() {
         xbox2.a().onTrue(elevatorSubsys.setHeight(0));
-        xbox2.b().onTrue(elevatorSubsys.setHeight(10));
-        xbox2.y().onTrue(elevatorSubsys.setHeight(20));
-        xbox2.x().onTrue(elevatorSubsys.setHeight(30));
+        xbox2.b().onTrue(elevatorSubsys.setHeight(8));
+        xbox2.y().onTrue(elevatorSubsys.setHeight(24));
+        xbox2.x().onTrue(elevatorSubsys.setHeight(48.5));
     }
 
     private void configSendableChoosers() {
@@ -134,7 +138,7 @@ public class RobotContainer {
     }
 
     private void configNamedCommands() {
-        //TODO add stuff here
+        // TODO add stuff here
     }
 
     // Pivot Controls
