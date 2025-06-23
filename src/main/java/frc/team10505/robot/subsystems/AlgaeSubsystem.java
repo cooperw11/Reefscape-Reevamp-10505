@@ -105,7 +105,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     }
 
     public Boolean hasAlgae() {
-        return pivotMotor.getOutputCurrent() > 20;
+        return pivotMotor.getOutputCurrent() > 0.65;
     }
 
     // Periodic Stuff
