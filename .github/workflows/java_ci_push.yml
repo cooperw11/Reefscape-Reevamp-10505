@@ -7,14 +7,11 @@
 
 
 
-name: Java CI with Gradle
+name: Java CI for Push
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-    types: [labeled, opened, synchronize, reopened]
 
 jobs:
   build:
