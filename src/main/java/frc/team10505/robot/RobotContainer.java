@@ -40,7 +40,7 @@ public class RobotContainer {
     private CommandJoystick joystick;
     private CommandJoystick joystick2;
 
-    private CommandXboxController xbox = new CommandXboxController(0);
+    private CommandXboxController xbox;
     private CommandXboxController xbox2;
 
     /* Subsystems */
@@ -120,10 +120,10 @@ public class RobotContainer {
     }
 
     private void elevatorButtonBindings() {
-        xbox2.a().onTrue(elevatorSubsys.setHeight(0));
-        xbox2.b().onTrue(elevatorSubsys.setHeight(8));
-        xbox2.y().onTrue(elevatorSubsys.setHeight(24));
-        xbox2.x().onTrue(elevatorSubsys.setHeight(48.5));
+        xbox2.x().onTrue(elevatorSubsys.setHeight(0));
+        xbox2.a().onTrue(elevatorSubsys.setHeight(8));
+        xbox2.b().onTrue(elevatorSubsys.setHeight(24));
+        xbox2.y().onTrue(elevatorSubsys.setHeight(48.5));
     }
 
     private void configSendableChoosers() {
